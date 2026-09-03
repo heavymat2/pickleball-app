@@ -30,14 +30,23 @@ export interface MatchOptions {
 }
 
 const DEFAULTS = {
-  // Card purchases post up to a few days late, and a paper receipt can be
-  // photographed later still. Beyond two weeks a same-amount coincidence is
-  // more likely than a real pairing.
-  maxDayGap: 14,
+  // Exact amount plus date within three days is the primary match, with the
+  // payee name as the secondary signal — the rule the bookkeeping spec sets.
+  // A wider window mostly buys same-amount coincidences, not real pairings.
+  maxDayGap: 3,
   // Card settlement in a foreign currency lands a few percent off the receipt.
   amountTolerance: 0.02,
   minConfidence: 0.5,
 } as const;
+
+/** Confidence in the vocabulary the review table uses. */
+export type Konfidenz = "hoch" | "mittel" | "unsicher";
+
+export function konfidenzOf(confidence: number): Konfidenz {
+  if (confidence >= 0.85) return "hoch";
+  if (confidence >= 0.65) return "mittel";
+  return "unsicher";
+}
 
 interface TxRow {
   id: number;
@@ -88,12 +97,9 @@ function score(tx: TxRow, receipt: ReceiptRow, options: Required<MatchOptions>):
     if (gap <= 1) {
       confidence += 0.3;
       parts.push("date");
-    } else if (gap <= 4) {
+    } else {
       confidence += 0.2;
       parts.push("date~");
-    } else {
-      confidence += 0.08;
-      parts.push("date~~");
     }
   }
 

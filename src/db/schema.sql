@@ -39,6 +39,11 @@ CREATE TABLE IF NOT EXISTS bank_transaction (
   family_code       TEXT,
   sub_family_code   TEXT,
   kind              TEXT    NOT NULL DEFAULT 'other',
+  -- Which account the booking was made on. A property of the booking, not of
+  -- the receipt: the same shop can be paid from either account, and that
+  -- choice is what decides Privatentnahme vs Privateinlage.
+  konto_quelle      TEXT    NOT NULL DEFAULT 'geschaeft'
+                    CHECK (konto_quelle IN ('geschaeft', 'privat')),
   source_file       TEXT,
   imported_at       TEXT    NOT NULL DEFAULT (datetime('now'))
 );

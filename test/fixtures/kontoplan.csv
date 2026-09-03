@@ -1,0 +1,33 @@
+Kontonummer,Kontoart,Kontobezeichnung
+1500,Vermögen,Maschinen und Apparate
+1510,Vermögen,Mobiliar und Einrichtungen
+1520,Vermögen,IT-Anlagen
+1530,Vermögen,Fahrzeuge
+1700,Vermögen,Immaterielle Werte
+2850,Eigenkapital,Privat (Kapitalkonto Inhaber - Privatentnahmen/-einlagen)
+3200,Einnahme,Handelsertrag
+3400,Einnahme,Dienstleistungsertrag
+3680,Einnahme,Übriger Ertrag
+3900,Einnahme,Verkauf von Anlagevermögen
+4200,Aufwand,Material- und Wareneinkauf
+4400,Aufwand,Drittdienstleister
+5008,Aufwand,Weiterbildung
+5700,Aufwand,AHV/IV/EO
+5750,Aufwand,Übrige Sozialversicherungen
+6000,Aufwand,Mietaufwand
+6100,Aufwand,URE Maschinen & Apparate
+6101,Aufwand,URE Mobiliar & Einrichtung
+6200,Aufwand,Fahrzeugaufwand
+6300,Aufwand,Sachversicherung
+6360,Aufwand,Gebühren und Abgaben
+6400,Aufwand,Strom
+6500,Aufwand,Büromaterial
+6510,Aufwand,Telefon / Internet / Porti
+6530,Aufwand,Rechts- und Beratungsaufwand
+6570,Aufwand,Informatikaufwand
+6600,Aufwand,Werbung
+6640,Aufwand,Reise- und Repräsentationsspesen
+6790,Aufwand,Übriger Betriebsaufwand
+6800,Aufwand,Abschreibungen
+6900,Aufwand,Bankspesen & Zinsaufwand
+6950,Einnahme,Zinsertrag
