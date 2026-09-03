@@ -1,0 +1,10 @@
+node_modules/
+
+# The bookkeeping database and any downloaded statements or receipts. Real
+# financial data must never be committed.
+data/
+*.db
+*.db-wal
+*.db-shm
+statements/
+receipts/

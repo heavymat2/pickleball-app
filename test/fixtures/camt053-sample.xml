@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Structure mirrors a real PostFinance camt.053.001.08 daily statement; all
+  values are synthetic. Covers the cases the parser has to get right:
+    - a direct debit with a structured creditor and a QR reference
+    - a second, identical direct debit on the same day (same amount, same QR
+      reference, different AcctSvcrRef) — must import as two rows
+    - card entries with no structured party, merchant only in AddtlNtryInf
+    - an incoming credit, where the counterparty is the debtor, not the creditor
+-->
+<Document xmlns="urn:iso:std:iso:20022:tech:xsd:camt.053.001.08" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:iso:std:iso:20022:tech:xsd:camt.053.001.08 camt.053.001.08.xsd">
+  <BkToCstmrStmt>
+    <GrpHdr>
+      <MsgId>20260630375204624814861</MsgId>
+      <CreDtTm>2026-07-01T03:14:09</CreDtTm>
+      <MsgPgntn><PgNb>1</PgNb><LastPgInd>true</LastPgInd></MsgPgntn>
+      <AddtlInf>SPS/2/PROD</AddtlInf>
+    </GrpHdr>
+    <Stmt>
+      <Id>20260701375204624814880</Id>
+      <ElctrncSeqNb>126</ElctrncSeqNb>
+      <CreDtTm>2026-07-01T03:14:09</CreDtTm>
+      <FrToDt>
+        <FrDtTm>2026-06-30T00:00:00</FrDtTm>
+        <ToDtTm>2026-06-30T23:59:59</ToDtTm>
+      </FrToDt>
+      <Acct>
+        <Id><IBAN>CH9300762011623852957</IBAN></Id>
+        <Tp><Cd>TRAN</Cd></Tp>
+        <Ccy>CHF</Ccy>
+        <Ownr><Nm>Example Studio Zürich</Nm></Ownr>
+      </Acct>
+      <Bal>
+        <Tp><CdOrPrtry><Cd>OPBD</Cd></CdOrPrtry></Tp>
+        <Amt Ccy="CHF">450.83</Amt>
+        <CdtDbtInd>CRDT</CdtDbtInd>
+        <Dt><Dt>2026-06-30</Dt></Dt>
+      </Bal>
+      <Bal>
+        <Tp><CdOrPrtry><Cd>CLBD</Cd></CdOrPrtry></Tp>
+        <Amt Ccy="CHF">1265.43</Amt>
+        <CdtDbtInd>CRDT</CdtDbtInd>
+        <Dt><Dt>2026-06-30</Dt></Dt>
+      </Bal>
+      <Bal>
+        <Tp><CdOrPrtry><Cd>CLAV</Cd></CdOrPrtry></Tp>
+        <Amt Ccy="CHF">1265.43</Amt>
+        <CdtDbtInd>CRDT</CdtDbtInd>
+        <Dt><Dt>2026-06-30</Dt></Dt>
+      </Bal>
+
+      <Ntry>
+        <Amt Ccy="CHF">90.25</Amt>
+        <CdtDbtInd>DBIT</CdtDbtInd>
+        <RvslInd>false</RvslInd>
+        <Sts><Cd>BOOK</Cd></Sts>
+        <BookgDt><Dt>2026-06-30</Dt></BookgDt>
+        <ValDt><Dt>2026-06-30</Dt></ValDt>
+        <AcctSvcrRef>18162000EW0LLG0K</AcctSvcrRef>
+        <BkTxCd><Domn><Cd>PMNT</Cd><Fmly><Cd>ICDT</Cd><SubFmlyCd>DMCT</SubFmlyCd></Fmly></Domn></BkTxCd>
+        <NtryDtls><TxDtls>
+          <Refs><AcctSvcrRef>25-1509480058-1</AcctSvcrRef><PmtInfId>25:1509480058</PmtInfId></Refs>
+          <Amt Ccy="CHF">90.25</Amt>
+          <CdtDbtInd>DBIT</CdtDbtInd>
+          <RltdPties>
+            <Cdtr><Pty>
+              <Nm>Example Telecom SA</Nm>
+              <PstlAdr><StrtNm>Avenue de Malley</StrtNm><BldgNb>2</BldgNb><PstCd>1008</PstCd><TwnNm>Prilly</TwnNm><Ctry>CH</Ctry></PstlAdr>
+            </Pty></Cdtr>
+            <CdtrAcct><Id><IBAN>CH5604835012345678009</IBAN></Id></CdtrAcct>
+          </RltdPties>
+          <RmtInf><Strd><CdtrRefInf>
+            <Tp><CdOrPrtry><Prtry>QRR</Prtry></CdOrPrtry></Tp>
+            <Ref>000000000000000009604749054</Ref>
+          </CdtrRefInf></Strd></RmtInf>
+        </TxDtls></NtryDtls>
+        <AddtlNtryInf>LASTSCHRIFT EXAMPLE BANK AG EXAMPLE TELECOM SA AVENUE DE MALLEY 2 1008 PRILLY</AddtlNtryInf>
+      </Ntry>
+
+      <Ntry>
+        <Amt Ccy="CHF">90.25</Amt>
+        <CdtDbtInd>DBIT</CdtDbtInd>
+        <RvslInd>false</RvslInd>
+        <Sts><Cd>BOOK</Cd></Sts>
+        <BookgDt><Dt>2026-06-30</Dt></BookgDt>
+        <ValDt><Dt>2026-06-30</Dt></ValDt>
+        <AcctSvcrRef>18162000EW0SOIAK</AcctSvcrRef>
+        <BkTxCd><Domn><Cd>PMNT</Cd><Fmly><Cd>ICDT</Cd><SubFmlyCd>DMCT</SubFmlyCd></Fmly></Domn></BkTxCd>
+        <NtryDtls><TxDtls>
+          <Refs><AcctSvcrRef>25-1509293009-1</AcctSvcrRef><PmtInfId>25:1509293009</PmtInfId></Refs>
+          <Amt Ccy="CHF">90.25</Amt>
+          <CdtDbtInd>DBIT</CdtDbtInd>
+          <RltdPties>
+            <Cdtr><Pty><Nm>Example Telecom SA</Nm></Pty></Cdtr>
+            <CdtrAcct><Id><IBAN>CH5604835012345678009</IBAN></Id></CdtrAcct>
+          </RltdPties>
+          <RmtInf><Strd><CdtrRefInf>
+            <Tp><CdOrPrtry><Prtry>QRR</Prtry></CdOrPrtry></Tp>
+            <Ref>000000000000000009604749054</Ref>
+          </CdtrRefInf></Strd></RmtInf>
+        </TxDtls></NtryDtls>
+        <AddtlNtryInf>LASTSCHRIFT EXAMPLE BANK AG EXAMPLE TELECOM SA AVENUE DE MALLEY 2 1008 PRILLY</AddtlNtryInf>
+      </Ntry>
+
+      <Ntry>
+        <Amt Ccy="CHF">39.95</Amt>
+        <CdtDbtInd>DBIT</CdtDbtInd>
+        <RvslInd>false</RvslInd>
+        <Sts><Cd>BOOK</Cd></Sts>
+        <BookgDt><Dt>2026-06-30</Dt></BookgDt>
+        <ValDt><Dt>2026-06-29</Dt></ValDt>
+        <AcctSvcrRef>18163000956905140</AcctSvcrRef>
+        <BkTxCd><Domn><Cd>PMNT</Cd><Fmly><Cd>CCRD</Cd><SubFmlyCd>POSD</SubFmlyCd></Fmly></Domn></BkTxCd>
+        <NtryDtls><TxDtls>
+          <Refs><AcctSvcrRef>18163000956905140</AcctSvcrRef></Refs>
+          <Amt Ccy="CHF">39.95</Amt>
+          <CdtDbtInd>DBIT</CdtDbtInd>
+        </TxDtls></NtryDtls>
+        <AddtlNtryInf>KAUF/ONLINE-SHOPPING VOM 29.06.2026 KARTEN NR. XXXX8247 EXAMPLE TELECOM SA N/A PAYMENT ID 260629131800613492 BESTELLNUMMER GVDX-SKPU-45DS</AddtlNtryInf>
+      </Ntry>
+
+      <Ntry>
+        <Amt Ccy="CHF">85.00</Amt>
+        <CdtDbtInd>DBIT</CdtDbtInd>
+        <RvslInd>false</RvslInd>
+        <Sts><Cd>BOOK</Cd></Sts>
+        <BookgDt><Dt>2026-06-30</Dt></BookgDt>
+        <ValDt><Dt>2026-06-30</Dt></ValDt>
+        <AcctSvcrRef>18163000974199630</AcctSvcrRef>
+        <BkTxCd><Domn><Cd>PMNT</Cd><Fmly><Cd>CCRD</Cd><SubFmlyCd>POSD</SubFmlyCd></Fmly></Domn></BkTxCd>
+        <NtryDtls><TxDtls>
+          <Refs><AcctSvcrRef>18163000974199630</AcctSvcrRef></Refs>
+          <Amt Ccy="CHF">85.00</Amt>
+          <CdtDbtInd>DBIT</CdtDbtInd>
+        </TxDtls></NtryDtls>
+        <AddtlNtryInf>APPLE PAY KAUF/DIENSTLEISTUNG VOM 30.06.2026 KARTEN NR. XXXX8247 EXAMPLE CAMERA AG ZÜRICH (CH)</AddtlNtryInf>
+      </Ntry>
+
+      <Ntry>
+        <Amt Ccy="CHF">1200.00</Amt>
+        <CdtDbtInd>CRDT</CdtDbtInd>
+        <RvslInd>false</RvslInd>
+        <Sts><Cd>BOOK</Cd></Sts>
+        <BookgDt><Dt>2026-06-30</Dt></BookgDt>
+        <ValDt><Dt>2026-06-30</Dt></ValDt>
+        <AcctSvcrRef>18163000980001111</AcctSvcrRef>
+        <BkTxCd><Domn><Cd>PMNT</Cd><Fmly><Cd>RCDT</Cd><SubFmlyCd>DMCT</SubFmlyCd></Fmly></Domn></BkTxCd>
+        <NtryDtls><TxDtls>
+          <Refs><AcctSvcrRef>18163000980001111</AcctSvcrRef></Refs>
+          <Amt Ccy="CHF">1200.00</Amt>
+          <CdtDbtInd>CRDT</CdtDbtInd>
+          <RltdPties>
+            <Dbtr><Pty><Nm>Beispiel Hotel GmbH</Nm></Pty></Dbtr>
+            <DbtrAcct><Id><IBAN>CH2109000000100013997</IBAN></Id></DbtrAcct>
+          </RltdPties>
+          <RmtInf><Ustrd>Rechnung 189 Fotoshooting Juni</Ustrd></RmtInf>
+        </TxDtls></NtryDtls>
+        <AddtlNtryInf>GUTSCHRIFT BEISPIEL HOTEL GMBH</AddtlNtryInf>
+      </Ntry>
+
+      <!--
+        A client paying through a payment processor. The debtor is the
+        processor; the client is the ultimate debtor. Also carries the invoice
+        number in AddtlRmtInf, alongside the bank's own ?REJECT?/?ERROR? status
+        markers, which are not payer text.
+      -->
+      <Ntry>
+        <NtryRef>CH9300762011623852957</NtryRef>
+        <Amt Ccy="CHF">5160.00</Amt>
+        <CdtDbtInd>CRDT</CdtDbtInd>
+        <RvslInd>false</RvslInd>
+        <Sts><Cd>BOOK</Cd></Sts>
+        <BookgDt><Dt>2026-06-30</Dt></BookgDt>
+        <ValDt><Dt>2026-06-30</Dt></ValDt>
+        <AcctSvcrRef>05162000EDDY671K</AcctSvcrRef>
+        <BkTxCd><Domn><Cd>PMNT</Cd><Fmly><Cd>RCDT</Cd><SubFmlyCd>VCOM</SubFmlyCd></Fmly></Domn></BkTxCd>
+        <NtryDtls>
+          <Btch><NbOfTxs>1</NbOfTxs></Btch>
+          <TxDtls>
+            <Refs><AcctSvcrRef>260219CH0EDDY671</AcctSvcrRef><EndToEndId>E260219AhSN8XRj</EndToEndId></Refs>
+            <Amt Ccy="CHF">5160.00</Amt>
+            <CdtDbtInd>CRDT</CdtDbtInd>
+            <RltdPties>
+              <Dbtr><Pty><Nm>Example Payments UAB</Nm><PstlAdr><TwnNm>Vilnius</TwnNm><Ctry>LT</Ctry></PstlAdr></Pty></Dbtr>
+              <DbtrAcct><Id><IBAN>CH6109000000163845434</IBAN></Id></DbtrAcct>
+              <UltmtDbtr><Pty><Nm>BEISPIEL MEDIA GMBH</Nm><PstlAdr><TwnNm>Zurich</TwnNm><Ctry>CH</Ctry></PstlAdr></Pty></UltmtDbtr>
+              <CdtrAcct><Id><IBAN>CH9300762011623852957</IBAN></Id></CdtrAcct>
+            </RltdPties>
+            <RmtInf><Strd>
+              <CdtrRefInf><Tp><CdOrPrtry><Cd>SCOR</Cd></CdOrPrtry></Tp><Ref>RF32000000175</Ref></CdtrRefInf>
+              <AddtlRmtInf>?REJECT?0</AddtlRmtInf>
+              <AddtlRmtInf>?ERROR?000</AddtlRmtInf>
+              <AddtlRmtInf>Rechnung: 0000000175</AddtlRmtInf>
+            </Strd></RmtInf>
+          </TxDtls>
+        </NtryDtls>
+        <AddtlNtryInf>GUTSCHRIFT ABSENDER: EXAMPLE PAYMENTS UAB BEISPIEL MEDIA GMBH MITTEILUNGEN: RECHNUNG: 0000000175</AddtlNtryInf>
+      </Ntry>
+    </Stmt>
+  </BkToCstmrStmt>
+</Document>

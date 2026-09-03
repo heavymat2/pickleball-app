@@ -1,21 +1,22 @@
 {
-  "name": "pickleball-app",
+  "name": "feelgood-os",
+  "version": "0.1.0",
   "private": true,
-  "version": "0.0.0",
   "type": "module",
+  "description": "Bookkeeping and CRM for Feelgood Kurmann",
+  "engines": {
+    "node": ">=22.5"
+  },
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "fgos": "node --experimental-sqlite --disable-warning=ExperimentalWarning --experimental-strip-types src/cli.ts",
+    "test": "node --experimental-sqlite --disable-warning=ExperimentalWarning --experimental-strip-types --test test/*.test.ts",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "fast-xml-parser": "^4.5.1"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.18",
-    "postcss": "^8.4.35",
-    "tailwindcss": "^3.4.7",
-    "vite": "^5.2.0"
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
   }
 }
