@@ -9,7 +9,9 @@
   },
   "scripts": {
     "fgos": "node --experimental-sqlite --disable-warning=ExperimentalWarning --experimental-strip-types src/cli.ts",
-    "test": "node --experimental-sqlite --disable-warning=ExperimentalWarning --experimental-strip-types --test test/*.test.ts",
+    "test": "npm run test:ts && npm run test:py",
+    "test:ts": "node --experimental-sqlite --disable-warning=ExperimentalWarning --experimental-strip-types --test test/*.test.ts",
+    "test:py": "python3 -m unittest discover -s test -p 'test_*.py'",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

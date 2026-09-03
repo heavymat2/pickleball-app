@@ -108,6 +108,45 @@ class Statement:
     bookings: list[Booking]
 
 
+def find_iban(text: str) -> str | None:
+    """Read the account's own IBAN, tolerating the COPY watermark.
+
+    Statement copies carry a diagonal "COPY" whose letters land inside the text
+    stream, so the IBAN can arrive as "CH41 0900 0000 15 O 45 7065 4". Digits
+    after the country code are therefore taken and everything else discarded,
+    and the result is only accepted if it is a well-formed Swiss IBAN.
+
+    Anchored on the literal "IBAN" label so a counterparty's IBAN quoted in a
+    booking description is never mistaken for the account's own.
+    """
+    best: str | None = None
+
+    for candidate in re.findall(r"IBAN\s+(CH[0-9A-Z\s]{18,34})", text):
+        cleaned = "CH" + re.sub(r"\D", "", candidate[2:])
+        if re.fullmatch(r"CH\d{19}", cleaned):
+            # Later pages repeat the IBAN without the watermark over it, so a
+            # clean match is preferred, but any valid one beats none.
+            if best is None or "O" not in candidate:
+                best = cleaned
+    return best
+
+
+def find_period(text: str) -> tuple[str | None, str | None]:
+    """Read the statement period, tolerating watermark letters inside dates.
+
+    "Kontoauszug 01.08.2026 - 31.P08.2026" is a real example: the P belongs to
+    the watermark, not the date.
+    """
+    match = re.search(r"Kontoauszug\s+([0-9.A-Z]+)\s*-\s*([0-9.A-Z]+)", text)
+    if not match:
+        return None, None
+
+    def clean(part: str) -> str | None:
+        return parse_date(re.sub(r"[^\d.]", "", part))
+
+    return clean(match.group(1)), clean(match.group(2))
+
+
 def merge_amount_fragments(row: list[dict]) -> list[dict]:
     """Rejoin number fragments split on the thousands separator.
 
@@ -217,18 +256,13 @@ def extract(path: Path) -> Statement:
     with pdfplumber.open(path) as pdf:
         full_text = "\n".join(page.extract_text() or "" for page in pdf.pages)
 
-        iban_match = re.search(r"\b(CH[\d\s]{19,26})\b", full_text)
-        if iban_match:
-            iban = re.sub(r"\s+", "", iban_match.group(1))
+        iban = find_iban(full_text)
 
         account_match = re.search(r"Kontonummer\s+([\d-]+)", full_text)
         if account_match:
             account_number = account_match.group(1)
 
-        period = re.search(r"Kontoauszug\s+(\d{2}\.\d{2}\.\d{4})\s*-\s*(\d{2}\.\d{2}\.\d{4})", full_text)
-        if period:
-            period_from = parse_date(period.group(1))
-            period_to = parse_date(period.group(2))
+        period_from, period_to = find_period(full_text)
 
         for page_number, page in enumerate(pdf.pages, start=1):
             rows = group_rows(page.extract_words(use_text_flow=False, keep_blank_chars=False))
