@@ -108,6 +108,39 @@ class Statement:
     bookings: list[Booking]
 
 
+# Page furniture and print-control marks that repeat on every page and land in
+# the middle of booking descriptions. They matter because categorization rules
+# match on the payee, and "ED 65600 SBB CFF FFS" is harder to match than
+# "SBB CFF FFS".
+FURNITURE_TOKENS = frozenset({"ED", "P", "O", "C", "Y", "A-PRIORITY", "P.P."})
+FURNITURE_PATTERNS = (
+    re.compile(r"^Seite$", re.I),
+    re.compile(r"^\d{5}$"),           # print job code, e.g. 65600
+    re.compile(r"^00\.\d{6}$"),       # despatch code, e.g. 00.630000
+    re.compile(r"^/$"),
+)
+
+
+def is_furniture(token: str) -> bool:
+    """Whether a token is print furniture rather than booking text."""
+    if token in FURNITURE_TOKENS:
+        return True
+    return any(pattern.match(token) for pattern in FURNITURE_PATTERNS)
+
+
+def clean_description(tokens: list[str]) -> str:
+    """Drop page furniture from a description, keeping the payee intact.
+
+    Conservative by design: only exact known artifacts are removed, since a
+    payee wrongly stripped is worse than one left slightly noisy.
+    """
+    kept = [token for token in tokens if not is_furniture(token)]
+    # "Seite 2 / 15" leaves a bare page number behind once "Seite" and "/" go.
+    while kept and kept[-1].isdigit() and len(kept[-1]) <= 2:
+        kept.pop()
+    return " ".join(kept).strip()
+
+
 def find_iban(text: str) -> str | None:
     """Read the account's own IBAN, tolerating the COPY watermark.
 
@@ -303,7 +336,9 @@ def extract(path: Path) -> Statement:
                     # rest of the sentence. Attach it to the booking above so
                     # the payee survives, since categorization matches on it.
                     if bookings and not any(parse_amount(t) for t in texts):
-                        bookings[-1].description = f"{bookings[-1].description} {joined}".strip()
+                        extra = clean_description(texts)
+                        if extra:
+                            bookings[-1].description = f"{bookings[-1].description} {extra}".strip()
                     continue
 
                 credit = debit = balance = None
@@ -347,7 +382,7 @@ def extract(path: Path) -> Statement:
                         amount=amount,
                         signed_amount=amount if is_credit else -amount,
                         direction="CRDT" if is_credit else "DBIT",
-                        description=" ".join(text_words).strip(),
+                        description=clean_description(text_words),
                         balance_after=balance,
                         page=page_number,
                     )

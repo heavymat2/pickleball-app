@@ -25,6 +25,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT / "test" / "fixtures"))
 
 from extract_pdf_statement import (  # noqa: E402
+    clean_description,
     extract,
     find_iban,
     find_period,
@@ -83,6 +84,28 @@ class WatermarkTest(unittest.TestCase):
             find_period("Kontoauszug 01.08.2026 - 31.P08.2026"),
             ("2026-08-01", "2026-08-31"),
         )
+
+
+class CleanDescriptionTest(unittest.TestCase):
+    """Page furniture repeats on every page and lands inside descriptions."""
+
+    def test_strips_print_furniture(self) -> None:
+        # Real tokens from a June statement: despatch code, print job code,
+        # a stray watermark letter, and a page footer.
+        tokens = ["ED", "TWINT", "KAUF/DIENSTLEISTUNG", "65600", "SBB", "EASYRIDE", "BERN", "(CH)", "Seite", "2"]
+        self.assertEqual(
+            clean_description(tokens),
+            "TWINT KAUF/DIENSTLEISTUNG SBB EASYRIDE BERN (CH)",
+        )
+
+    def test_keeps_the_payee_intact(self) -> None:
+        # Categorization matches on the payee, so it must survive untouched.
+        tokens = ["KARTEN", "NR.", "XXXX3907", "ANTHROPIC*", "CLAUDE", "SUB", "SAN", "FRANCISCO"]
+        self.assertIn("ANTHROPIC* CLAUDE SUB SAN FRANCISCO", clean_description(tokens))
+
+    def test_does_not_strip_digits_that_are_part_of_a_name(self) -> None:
+        # "COOP-1910" must not lose its number.
+        self.assertEqual(clean_description(["COOP-1910", "ZH", "WOLLISHOFEN"]), "COOP-1910 ZH WOLLISHOFEN")
 
 
 class ExtractStatementTest(unittest.TestCase):
